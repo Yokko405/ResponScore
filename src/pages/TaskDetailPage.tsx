@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { taskService } from '../services';
+import { taskService, reactionService, userService } from '../services';
 import type { TaskDTO } from '../services/dtos';
 import { ReactionButtons } from '../components/TaskDetail/ReactionButtons';
 import { Loading } from '../components/Loading';
@@ -18,6 +18,7 @@ export function TaskDetailPage({ currentUserId }: TaskDetailPageProps) {
   const [task, setTask] = useState<TaskDTO | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [allAssigneesCompleted, setAllAssigneesCompleted] = useState(false);
 
   useEffect(() => {
     if (!id) {
@@ -39,12 +40,35 @@ export function TaskDetailPage({ currentUserId }: TaskDetailPageProps) {
         return;
       }
       setTask(data);
+      await checkAllAssigneesCompleted(data);
     } catch (err) {
       console.error('Failed to load task:', err);
       setError('タスク読み込みに失敗しました');
       showError('タスク読み込みに失敗しました');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const checkAllAssigneesCompleted = async (taskData: TaskDTO) => {
+    try {
+      const reactions = await reactionService.getReactionsByTaskId(taskData.id);
+      const doneReactions = reactions.filter(r => r.type === 'done');
+      const doneUserIds = new Set(doneReactions.map(r => r.userId));
+      
+      // 担当者リストを取得（'all'の場合は全ユーザー）
+      let assigneeList = taskData.assigneeIds;
+      if (assigneeList.includes('all')) {
+        const allUsers = await userService.getAllUsers();
+        assigneeList = allUsers.map(u => u.id);
+      }
+      
+      // 全担当者が完了リアクションを押したかチェック
+      const completed = assigneeList.every(assigneeId => doneUserIds.has(assigneeId));
+      setAllAssigneesCompleted(completed);
+    } catch (err) {
+      console.error('Failed to check assignees completion:', err);
+      setAllAssigneesCompleted(false);
     }
   };
 
@@ -122,11 +146,11 @@ export function TaskDetailPage({ currentUserId }: TaskDetailPageProps) {
             userId={currentUserId}
             assigneeIds={task.assigneeIds}
             onReactionAdded={handleReactionAdded}
-            disabled={task.status === 'done'}
+            disabled={allAssigneesCompleted}
           />
-          {task.status === 'done' && (
+          {allAssigneesCompleted && (
             <p className="task-detail-page__completed-notice">
-              このタスクは完了しています
+              全担当者が完了しました
             </p>
           )}
         </div>

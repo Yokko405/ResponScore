@@ -127,8 +127,27 @@ export class ReactionService {
       // 🔴 working: 未読 → 対応中
       updatedTask = (await taskRepository.update(taskId, { status: 'in_progress' })) || task;
     } else if (type === 'done') {
-      // ✔ done: (任意) → 完了
-      updatedTask = (await taskRepository.update(taskId, { status: 'done' })) || task;
+      // ✔ done: 全担当者が完了リアクションを押したら完了状態にする
+      const allReactions = await this.reactionRepo.findByTaskId(taskId);
+      const doneReactions = allReactions.filter(r => r.type === 'done');
+      const doneUserIds = new Set(doneReactions.map(r => r.userId));
+      
+      // 担当者リストを取得（'all'の場合は全ユーザー）
+      let assigneeList = task.assigneeIds;
+      if (assigneeList.includes('all')) {
+        const allUsers = await userRepository.findAll();
+        assigneeList = allUsers.map(u => u.id);
+      }
+      
+      // 全担当者が完了リアクションを押したかチェック
+      const allAssigneesCompleted = assigneeList.every(assigneeId => doneUserIds.has(assigneeId));
+      
+      if (allAssigneesCompleted) {
+        updatedTask = (await taskRepository.update(taskId, { status: 'done' })) || task;
+      } else if (task.status === 'unread') {
+        // 未読の場合は対応中に変更
+        updatedTask = (await taskRepository.update(taskId, { status: 'in_progress' })) || task;
+      }
     }
 
     // スコア付与処理（イベントドリブン）
