@@ -8,8 +8,9 @@
   [![React](https://img.shields.io/badge/React-19.2.0-61DAFB?logo=react)](https://react.dev/)
   [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript)](https://www.typescriptlang.org/)
   [![Vite](https://img.shields.io/badge/Vite-7.2.2-646CFF?logo=vite)](https://vite.dev/)
+  [![Live Demo](https://img.shields.io/badge/Live%20Demo-responscore.pages.dev-orange?logo=cloudflare)](https://responscore.pages.dev)
   
-  [🚀 公開URL](https://responscore.pages.dev) | [📖 Documentation](.github/copilot-instructions.md)
+  **🚀 [公開URL](https://responscore.pages.dev)** | [📖 Documentation](.github/copilot-instructions.md)
 </div>
 
 ---
