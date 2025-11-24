@@ -1,0 +1,166 @@
+.ranking-table-wrapper {
+  overflow-x: auto;
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: var(--color-bg);
+}
+
+.ranking-table thead {
+  background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  color: white;
+  font-weight: var(--font-weight-semibold);
+}
+
+.ranking-table th {
+  padding: var(--space-16) var(--space-24);
+  text-align: left;
+  font-size: var(--font-size-sm);
+}
+
+.ranking-table td {
+  padding: var(--space-16) var(--space-24);
+  border-bottom: 1px solid var(--color-border);
+  font-size: var(--font-size-sm);
+}
+
+.ranking-table tbody tr {
+  transition: background-color 0.2s ease;
+}
+
+.ranking-table tbody tr:hover {
+  background-color: var(--color-bg-light);
+}
+
+.ranking-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.ranking-table__row--highlight {
+  background-color: rgba(30, 136, 229, 0.05);
+}
+
+.ranking-table__row--highlight:hover {
+  background-color: rgba(30, 136, 229, 0.1);
+}
+
+/* ===== カラム幅 ===== */
+.ranking-table__col--rank {
+  width: 80px;
+  text-align: center;
+}
+
+.ranking-table__col--name {
+  width: 200px;
+}
+
+.ranking-table__col--score {
+  width: 150px;
+  text-align: right;
+}
+
+.ranking-table__col--change {
+  width: 120px;
+  text-align: center;
+}
+
+.ranking-table__col--avg-time {
+  width: 150px;
+  text-align: center;
+}
+
+/* ===== セル内容 ===== */
+.ranking-table__medal {
+  font-size: var(--font-size-xl);
+}
+
+.ranking-table__rank-number {
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.ranking-table__name {
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.ranking-table__score {
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  color: var(--color-primary);
+}
+
+.ranking-table__trend-icon {
+  font-weight: var(--font-weight-bold);
+  margin-right: var(--space-4);
+}
+
+.ranking-table__col--change.trend--up {
+  color: var(--color-success);
+}
+
+.ranking-table__col--change.trend--down {
+  color: var(--color-error);
+}
+
+.ranking-table__col--change.trend--flat {
+  color: var(--color-text-secondary);
+}
+
+.ranking-table__trend-value {
+  font-weight: var(--font-weight-medium);
+}
+
+.ranking-table__avg-time {
+  color: var(--color-text-secondary);
+}
+
+/* ===== レスポンシブ ===== */
+@media (max-width: var(--breakpoint-md)) {
+  .ranking-table th,
+  .ranking-table td {
+    padding: var(--space-12) var(--space-12);
+    font-size: 0.875rem;
+  }
+
+  .ranking-table__col--rank {
+    width: 60px;
+  }
+
+  .ranking-table__col--name {
+    width: auto;
+    min-width: 150px;
+  }
+
+  .ranking-table__col--score {
+    width: 120px;
+  }
+
+  .ranking-table__col--change {
+    width: 100px;
+  }
+
+  .ranking-table__col--avg-time {
+    width: 140px;
+  }
+}
+
+@media (max-width: var(--breakpoint-sm)) {
+  .ranking-table th,
+  .ranking-table td {
+    padding: var(--space-8) var(--space-8);
+    font-size: 0.75rem;
+  }
+
+  .ranking-table__medal {
+    font-size: var(--font-size-base);
+  }
+
+  .ranking-table__col--change {
+    font-size: 0.7rem;
+  }
+}
