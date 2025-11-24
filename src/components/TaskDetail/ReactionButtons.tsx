@@ -7,6 +7,7 @@ import './ReactionButtons.css';
 interface ReactionButtonsProps {
   taskId: string;
   userId: string;
+  assigneeIds: string[]; // 担当者IDリスト
   onReactionAdded?: (result: any) => void;
   disabled?: boolean;
 }
@@ -25,11 +26,15 @@ const reactionTypes: Array<{
 export function ReactionButtons({
   taskId,
   userId,
+  assigneeIds,
   onReactionAdded,
   disabled = false,
 }: ReactionButtonsProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedType, setSelectedType] = useState<Reaction['type'] | null>(null);
+
+  // ユーザーが担当者かチェック
+  const isAssignee = assigneeIds.includes(userId) || assigneeIds.includes('all');
 
   const handleReaction = async (type: Reaction['type']) => {
     if (isLoading || disabled) return;
@@ -57,7 +62,7 @@ export function ReactionButtons({
     } catch (error) {
       console.error('Failed to add reaction:', error);
       const errorMessage = error instanceof Error && error.message.includes('完了')
-        ? 'このタスクは既に完了しています'
+        ? error.message
         : 'リアクション追加に失敗しました';
       showError(errorMessage);
       setSelectedType(null);
@@ -70,20 +75,26 @@ export function ReactionButtons({
     <div className="reaction-buttons">
       <div className="reaction-buttons__label">リアクション:</div>
       <div className="reaction-buttons__group">
-        {reactionTypes.map((reaction) => (
-          <button
-            key={reaction.type}
-            className={`reaction-button ${
-              selectedType === reaction.type ? 'reaction-button--active' : ''
-            }`}
-            onClick={() => handleReaction(reaction.type)}
-            disabled={isLoading || disabled}
-            title={reaction.label}
-          >
-            <span className="reaction-button__emoji">{reaction.emoji}</span>
-            <span className="reaction-button__label">{reaction.label}</span>
-          </button>
-        ))}
+        {reactionTypes.map((reaction) => {
+          // 完了ボタンは担当者のみ有効
+          const isDoneButton = reaction.type === 'done';
+          const isButtonDisabled = isLoading || disabled || (isDoneButton && !isAssignee);
+          
+          return (
+            <button
+              key={reaction.type}
+              className={`reaction-button ${
+                selectedType === reaction.type ? 'reaction-button--active' : ''
+              } ${isButtonDisabled && isDoneButton && !disabled ? 'reaction-button--locked' : ''}`}
+              onClick={() => handleReaction(reaction.type)}
+              disabled={isButtonDisabled}
+              title={isDoneButton && !isAssignee ? '完了は担当者のみ押せます' : reaction.label}
+            >
+              <span className="reaction-button__emoji">{reaction.emoji}</span>
+              <span className="reaction-button__label">{reaction.label}</span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

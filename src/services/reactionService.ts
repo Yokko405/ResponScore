@@ -82,6 +82,14 @@ export class ReactionService {
       throw new Error(`User not found: ${userId}`);
     }
 
+    // 完了ボタンは担当者のみ押せる
+    if (type === 'done') {
+      const isAssignee = task.assigneeIds.includes(userId) || task.assigneeIds.includes('all');
+      if (!isAssignee) {
+        throw new Error('完了ボタンはタスク担当者のみ押せます');
+      }
+    }
+
     // 既存のリアクションをチェック
     const existingReactions = await this.reactionRepo.findByTaskAndUser(taskId, userId);
     

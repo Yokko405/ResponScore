@@ -64,6 +64,18 @@
   cursor: not-allowed;
 }
 
+.reaction-button--locked {
+  opacity: 0.4;
+  background-color: var(--color-bg-disabled, #f5f5f5);
+  border-color: var(--color-border-light, #e0e0e0);
+  cursor: not-allowed;
+}
+
+.reaction-button--locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
 .reaction-button__emoji {
   font-size: var(--font-size-2xl);
   transition: transform 0.2s ease;

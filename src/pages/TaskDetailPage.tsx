@@ -120,6 +120,7 @@ export function TaskDetailPage({ currentUserId }: TaskDetailPageProps) {
           <ReactionButtons
             taskId={task.id}
             userId={currentUserId}
+            assigneeIds={task.assigneeIds}
             onReactionAdded={handleReactionAdded}
             disabled={task.status === 'done'}
           />
