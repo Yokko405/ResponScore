@@ -5,7 +5,7 @@ import type { Task, Reaction, ScoreRecord, User } from '../types';
  */
 export interface TaskDTO extends Task {
   assignerName: string;
-  assigneeName: string;
+  assigneeNames: string[]; // 複数担当者の名前リスト
   reactionCount: number;
   latestReactionTime?: string;
 }

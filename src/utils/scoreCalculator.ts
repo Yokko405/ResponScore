@@ -160,7 +160,7 @@ export function calculateUserAverageFirstReactionTime(
   reactions: Reaction[]
 ): number {
   const userReactionTimes = tasks
-    .filter((task) => task.assigneeId === userId) // ユーザーが割り当てられたタスク
+    .filter((task) => task.assigneeIds.includes(userId) || task.assigneeIds.includes('all')) // ユーザーが割り当てられたタスク
     .map((task) => {
       const firstReaction = reactions
         .filter((r) => r.taskId === task.id && r.userId === userId && r.isFirstReactionForTask)

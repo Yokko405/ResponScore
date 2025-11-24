@@ -91,7 +91,7 @@ export function TaskDetailPage({ currentUserId }: TaskDetailPageProps) {
           </div>
           <div className="task-detail-page__info">
             <span className="task-detail-page__label">担当者:</span>
-            <span className="task-detail-page__value">{task.assigneeName}</span>
+            <span className="task-detail-page__value">{task.assigneeNames.join(', ')}</span>
           </div>
         </div>
 
@@ -121,7 +121,13 @@ export function TaskDetailPage({ currentUserId }: TaskDetailPageProps) {
             taskId={task.id}
             userId={currentUserId}
             onReactionAdded={handleReactionAdded}
+            disabled={task.status === 'done'}
           />
+          {task.status === 'done' && (
+            <p className="task-detail-page__completed-notice">
+              このタスクは完了しています
+            </p>
+          )}
         </div>
       </div>
     </div>

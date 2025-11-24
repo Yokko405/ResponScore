@@ -90,11 +90,13 @@ export class TaskRepository implements ITaskRepository {
   }
 
   /**
-   * assigneeId でタスクを検索
+   * assigneeIds でタスクを検索（複数担当者対応）
    */
   async findByAssigneeId(assigneeId: string): Promise<Task[]> {
     const tasks = getFromStorage<Task[]>(TASKS_STORAGE_KEY) || [];
-    const filtered = tasks.filter((t) => t.assigneeId === assigneeId);
+    const filtered = tasks.filter((t) => 
+      t.assigneeIds.includes(assigneeId) || t.assigneeIds.includes('all')
+    );
     return deepCopy(filtered);
   }
 

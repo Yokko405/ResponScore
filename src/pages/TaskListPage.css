@@ -80,6 +80,12 @@
   box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.1);
 }
 
+.task-list-page__form-hint {
+  font-size: 0.75rem;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
 .task-list-page__form-submit {
   padding: var(--space-12) var(--space-24);
   background-color: var(--color-success);

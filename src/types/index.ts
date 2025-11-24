@@ -14,7 +14,7 @@ export interface Task {
   title: string;
   detail: string;
   assignerId: string;
-  assigneeId: string;
+  assigneeIds: string[]; // 複数担当者対応（'all' で全員担当）
   createdAt: string; // ISO形式
   deadline?: string; // ISO形式（任意）
   status: 'unread' | 'in_progress' | 'done';

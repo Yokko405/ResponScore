@@ -52,7 +52,7 @@ export function TaskCard({ task, onClick }: TaskCardProps) {
         </div>
         <div className="task-card__info">
           <span className="task-card__info-label">担当者:</span>
-          <span className="task-card__info-value">{task.assigneeName}</span>
+          <span className="task-card__info-value">{task.assigneeNames.join(', ')}</span>
         </div>
       </div>
 

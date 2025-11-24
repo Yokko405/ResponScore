@@ -72,6 +72,11 @@ export class ReactionService {
       throw new Error(`Task not found: ${taskId}`);
     }
 
+    // タスクが完了状態の場合、リアクション不可
+    if (task.status === 'done') {
+      throw new Error('このタスクは既に完了しています');
+    }
+
     const user = await userRepository.findById(userId);
     if (!user) {
       throw new Error(`User not found: ${userId}`);

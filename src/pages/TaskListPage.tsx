@@ -21,7 +21,7 @@ export function TaskListPage({ currentUserId }: TaskListPageProps) {
   const [formData, setFormData] = useState({
     title: '',
     detail: '',
-    assigneeId: '',
+    assigneeIds: [] as string[],
   });
 
   useEffect(() => {
@@ -51,8 +51,8 @@ export function TaskListPage({ currentUserId }: TaskListPageProps) {
       return;
     }
 
-    if (!formData.assigneeId) {
-      showError('担当者を選択してください');
+    if (!formData.assigneeIds || formData.assigneeIds.length === 0) {
+      showError('担当者は最低1人選択してください');
       return;
     }
 
@@ -61,10 +61,10 @@ export function TaskListPage({ currentUserId }: TaskListPageProps) {
         formData.title,
         formData.detail,
         currentUserId,
-        formData.assigneeId
+        formData.assigneeIds
       );
       showSuccess('タスクを作成しました');
-      setFormData({ title: '', detail: '', assigneeId: '' });
+      setFormData({ title: '', detail: '', assigneeIds: [] });
       setShowForm(false);
       await loadTasks();
     } catch (err) {
@@ -107,18 +107,24 @@ export function TaskListPage({ currentUserId }: TaskListPageProps) {
           </div>
 
           <div className="task-list-page__form-group">
-            <label>担当者</label>
+            <label>担当者（複数選択可）</label>
             <select
-              value={formData.assigneeId}
-              onChange={(e) => setFormData({ ...formData, assigneeId: e.target.value })}
+              multiple
+              value={formData.assigneeIds}
+              onChange={(e) => {
+                const selected = Array.from(e.target.selectedOptions, option => option.value);
+                setFormData({ ...formData, assigneeIds: selected });
+              }}
+              size={6}
             >
-              <option value="">選択してください</option>
+              <option value="all">全員</option>
               <option value="user1">田中太郎</option>
               <option value="user2">佐藤花子</option>
               <option value="user3">鈴木次郎</option>
               <option value="user4">伊藤美咲</option>
               <option value="user5">渡辺健一</option>
             </select>
+            <p className="task-list-page__form-hint">Ctrl/Cmd + クリックで複数選択</p>
           </div>
 
           <button type="submit" className="task-list-page__form-submit">

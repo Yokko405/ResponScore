@@ -60,13 +60,13 @@ export class TaskService {
   }
 
   /**
-   * 新規タスクを作成
+   * 新規タスクを作成（複数担当者対応）
    */
   async createTask(
     title: string,
     detail: string,
     assignerId: string,
-    assigneeId: string,
+    assigneeIds: string[],
     deadline?: string
   ): Promise<TaskDTO> {
     const newTask: Task = {
@@ -74,7 +74,7 @@ export class TaskService {
       title,
       detail,
       assignerId,
-      assigneeId,
+      assigneeIds,
       createdAt: getCurrentISODateTime(),
       deadline,
       status: 'unread',
@@ -101,12 +101,22 @@ export class TaskService {
   }
 
   /**
-   * タスクをDTOに変換（ユーザー名などを付加）
+   * タスクをDTOに変換（複数担当者の名前を付加）
    */
   private async enrichTaskWithDTO(task: Task): Promise<TaskDTO> {
     const assigner = await userRepository.findById(task.assignerId);
-    const assignee = await userRepository.findById(task.assigneeId);
     const reactions = await reactionRepository.findByTaskId(task.id);
+
+    // 複数担当者の名前を取得
+    let assigneeNames: string[];
+    if (task.assigneeIds.includes('all')) {
+      assigneeNames = ['全員'];
+    } else {
+      const assignees = await Promise.all(
+        task.assigneeIds.map(id => userRepository.findById(id))
+      );
+      assigneeNames = assignees.map(u => u?.name || '不明').filter(Boolean);
+    }
 
     const latestReaction = reactions.sort(
       (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
@@ -115,7 +125,7 @@ export class TaskService {
     return {
       ...task,
       assignerName: assigner?.name || '不明なユーザー',
-      assigneeName: assignee?.name || '不明なユーザー',
+      assigneeNames,
       reactionCount: reactions.length,
       latestReactionTime: latestReaction?.createdAt,
     };

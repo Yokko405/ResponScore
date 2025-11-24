@@ -146,6 +146,16 @@
   margin-top: var(--space-16);
 }
 
+.task-detail-page__completed-notice {
+  margin-top: var(--space-16);
+  padding: var(--space-12);
+  background-color: rgba(76, 175, 80, 0.1);
+  border-left: 4px solid var(--color-done);
+  color: var(--color-text-secondary);
+  font-size: var(--font-size-sm);
+  border-radius: 4px;
+}
+
 /* ===== エラー ===== */
 .task-detail-page__error {
   display: flex;
