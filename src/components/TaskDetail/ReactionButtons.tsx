@@ -56,10 +56,7 @@ export function ReactionButtons({
       }, 3000);
     } catch (error) {
       console.error('Failed to add reaction:', error);
-      const errorMessage = error instanceof Error && error.message.includes('already reacted')
-        ? 'このタスクには既にリアクション済みです'
-        : 'リアクション追加に失敗しました';
-      showError(errorMessage);
+      showError('リアクション追加に失敗しました');
       setSelectedType(null);
     } finally {
       setIsLoading(false);

@@ -80,14 +80,17 @@ export class ReactionService {
     // 既存のリアクションをチェック
     const existingReactions = await this.reactionRepo.findByTaskAndUser(taskId, userId);
     
-    // 同じユーザーが既にこのタスクにリアクションしている場合はエラー
+    // 既存のリアクションがある場合は削除（上書き方式）
     if (existingReactions.length > 0) {
-      throw new Error(`User ${userId} has already reacted to task ${taskId}`);
+      for (const existingReaction of existingReactions) {
+        await this.reactionRepo.delete(existingReaction.id);
+      }
     }
 
+    // 初回リアクションかどうか（スコア付与判定用）
     const isFirstReaction = existingReactions.length === 0;
 
-    // リアクションを作成
+    // 新しいリアクションを作成
     const newReaction: Reaction = {
       id: generateId(),
       taskId,
