@@ -1,6 +1,29 @@
 import type { User, Task, Reaction, ScoreRecord } from '../types';
 
 /**
+ * 古いデータ構造をマイグレーション
+ */
+export function migrateTaskData(tasks: any[]): Task[] {
+  return tasks.map(task => {
+    // assigneeId が存在する場合は assigneeIds に変換
+    if (task.assigneeId && !task.assigneeIds) {
+      return {
+        ...task,
+        assigneeIds: [task.assigneeId],
+      };
+    }
+    // assigneeIds が存在しない場合は空配列
+    if (!task.assigneeIds) {
+      return {
+        ...task,
+        assigneeIds: [],
+      };
+    }
+    return task;
+  });
+}
+
+/**
  * ダミーユーザーデータ
  */
 export const mockUsers: User[] = [

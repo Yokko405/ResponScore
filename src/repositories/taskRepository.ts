@@ -1,7 +1,7 @@
 import type { Task } from '../types';
 import type { ITaskRepository } from './interfaces';
 import { getFromStorage, setToStorage, deepCopy } from './storage';
-import { mockTasks } from '../utils/mockData';
+import { mockTasks, migrateTaskData } from '../utils/mockData';
 
 const TASKS_STORAGE_KEY = 'ResponScore_Tasks';
 
@@ -17,12 +17,16 @@ export class TaskRepository implements ITaskRepository {
   }
 
   /**
-   * 初回初期化
+   * 初回初期化（マイグレーション処理含む）
    */
   private initializeIfNeeded(): void {
-    const existing = getFromStorage<Task[]>(TASKS_STORAGE_KEY);
+    const existing = getFromStorage<any[]>(TASKS_STORAGE_KEY);
     if (!existing || existing.length === 0) {
       setToStorage(TASKS_STORAGE_KEY, mockTasks);
+    } else {
+      // 既存データをマイグレーション
+      const migrated = migrateTaskData(existing);
+      setToStorage(TASKS_STORAGE_KEY, migrated);
     }
   }
 
