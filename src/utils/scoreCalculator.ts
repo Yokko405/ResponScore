@@ -51,6 +51,7 @@ export function applyFirstReactionScore(
 
 /**
  * 完了スタンプ（✔done）押下時のスコア記録を生成（純粋関数）
+ * 担当者のみボーナス付与
  * @param task - タスク
  * @param reaction - リアクション
  * @returns スコア記録（ID、createdAtは含まない）、doneでなければnull
@@ -61,6 +62,12 @@ export function applyDoneScore(
 ): Omit<ScoreRecord, 'id' | 'createdAt'> | null {
   // done スタンプのみボーナス対象
   if (reaction.type !== 'done') {
+    return null;
+  }
+
+  // 担当者またはallの場合のみボーナス付与
+  const isAssignee = task.assigneeIds.includes(reaction.userId) || task.assigneeIds.includes('all');
+  if (!isAssignee) {
     return null;
   }
 
